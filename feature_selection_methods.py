@@ -1,23 +1,18 @@
 
 """
-This is a quick demonstration of different features selection techniques. 
+This is a quick demonstration of different features selection techniques.
 Particularly how they affect training results and how much does it take to apply
 them.
 """
 
-import datetime
-import logging
-import sys
 import time
 
-import category_encoders as ce
 import numpy as np
 import pandas as pd
 from category_encoders import OrdinalEncoder
 from mlxtend.feature_selection import ExhaustiveFeatureSelector as EFS
 from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 from sklearn.compose import ColumnTransformer
-from sklearn.feature_selection import VarianceThreshold
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import make_scorer, mean_absolute_error
 from sklearn.model_selection import train_test_split
@@ -95,10 +90,8 @@ make_prediction(X_train, X_test, y_train, y_test)
 
 # Let's test sequential feature selection from mlxtend package
 sfs1 = SFS(XGBRegressor(),
-           k_features=len(X_train.columns),
-           #    k_features=2,
-           forward=True,
-           #    floating=False,
+           k_features=len(X_train.columns),  # k_features=2,
+           forward=True,  # floating=False,
            verbose=1,
            scoring=mape_score,
            cv=0,
@@ -109,7 +102,7 @@ print('sfs time:', time.time() - time_s)
 sfs_results = pd.DataFrame.from_dict(sfs1.subsets_).T.reset_index()
 
 test_mape = pd.DataFrame([], columns=['index', 'test_score'])
-for i in range(1, len(sfs_results)+1):
+for i in range(1, len(sfs_results) + 1):
     print(i)
     _mape = make_prediction(X_train[list(sfs1.subsets_[i]['feature_names'])],
                             X_test[list(sfs1.subsets_[i]['feature_names'])],
@@ -138,7 +131,7 @@ efs1 = EFS(XGBRegressor(),
            cv=0,
            n_jobs=-1)
 time_s = time.time()
-efs1.fit(X_train, y_train)
+# efs1.fit(X_train, y_train)
 print('efs time:', time.time() - time_s)
 efs_results = pd.DataFrame.from_dict(efs1.subsets_).T
 efs_results = efs_results.sort_values('avg_score', ascending=False)
@@ -148,4 +141,6 @@ make_prediction(X_train[list(efs1.best_feature_names_)],
                 y_train,
                 y_test)
 
-# to be continued...
+# fit on ExhaustiveFeatureSelector is switched off by default, it would simply
+# take to much time to execute the script. Because of that, recommendation is to
+# use SequentialFeatureSelector as a tool to filter important data attributes
