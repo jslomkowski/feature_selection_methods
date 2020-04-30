@@ -2,5 +2,5 @@
 *.log
 *.pickle
 *.v2
-.vscode/settings.json
+.vscode
 *.pyc
