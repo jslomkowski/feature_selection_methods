@@ -1,5 +1,3 @@
-# feature_selection_methods
- 
 # Feature selection methods
 
 This is a quick demonstration of different features selection techniques. Particularly how they affect training results and how much does it take to apply them.
